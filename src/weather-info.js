@@ -15,7 +15,6 @@ async function getWeatherInfo(city) {
     );
     const responseJSON = await response.json();
     const currentWeather = responseJSON.main.temp;
-    console.log(responseJSON);
     const weatherInfo = {
       weather: currentWeather,
       high: responseJSON.main.temp_max,
@@ -35,7 +34,8 @@ async function getWeatherInfo(city) {
     const mainInfo = document.querySelector('.main-info');
     const subInfo = document.querySelector('.sub-info');
     const city = document.querySelector('.city');
-    body.style.background = 'aqua';
+    const search = document.querySelector('#search');
+    body.style.background = '#94bbe9';
     mainInfo.childNodes.forEach((child) => {
       child.innerText = '';
     });
@@ -43,6 +43,7 @@ async function getWeatherInfo(city) {
       child.innerText = '';
     });
     city.innerText = 'Invalid City';
+    search.value = '';
     console.log('Error getting weather information');
   }
 }

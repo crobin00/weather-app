@@ -47,7 +47,6 @@ swapTempButton.addEventListener('click', (e) => {
 });
 
 async function getInputValue() {
-  console.log(await getWeatherInfo(search.value));
   weatherInfo = await getWeatherInfo(search.value);
   updateDOM(weatherInfo);
   descriptionToGif(weatherInfo.main);
@@ -83,19 +82,24 @@ function updateDOM(weatherInfo) {
 
 async function descriptionToGif(desc) {
   try {
-    //console.log(responseJSON);
     if (desc == 'Rain') {
       const response = await fetch(
-        `https://api.giphy.com/v1/gifs/dI3D3BWfDub0Q?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        `https://api.giphy.com/v1/gifs/gRnSZSRzOJeG4?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
         { mode: 'cors' }
       );
       const responseJSON = await response.json();
       body.style.background = `url(${responseJSON.data.images.original.url})`;
       body.style.backgroundRepeat = 'no-repeat';
       body.style.backgroundSize = 'cover';
-      console.log('rain');
     } else if (desc == 'Thunder') {
-      console.log('thunder');
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/3o6gDYJBQLIHFZoWL6?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
     } else if (desc == 'Drizzle') {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/xT9GEOg09OuResnZ6g?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
@@ -105,7 +109,6 @@ async function descriptionToGif(desc) {
       body.style.background = `url(${responseJSON.data.images.original.url})`;
       body.style.backgroundRepeat = 'no-repeat';
       body.style.backgroundSize = 'cover';
-      console.log('drizzle');
     } else if (desc == 'Snow') {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/Xi2Xu0MejhsUo?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
@@ -115,7 +118,6 @@ async function descriptionToGif(desc) {
       body.style.background = `url(${responseJSON.data.images.original.url})`;
       body.style.backgroundRepeat = 'no-repeat';
       body.style.backgroundSize = 'cover';
-      console.log('snow');
     } else if (desc == 'Clear') {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/u01ioCe6G8URG?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
@@ -125,7 +127,6 @@ async function descriptionToGif(desc) {
       body.style.background = `url(${responseJSON.data.images.original.url})`;
       body.style.backgroundRepeat = 'no-repeat';
       body.style.backgroundSize = 'cover';
-      console.log('clear');
     } else if (desc == 'Clouds') {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/qq5gwamAHVofm?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
@@ -135,7 +136,6 @@ async function descriptionToGif(desc) {
       body.style.background = `url(${responseJSON.data.images.original.url})`;
       body.style.backgroundRepeat = 'no-repeat';
       body.style.backgroundSize = 'cover';
-      console.log('clouds');
     } else {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/BiKbcxCt1y49dgtmzo?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
@@ -145,7 +145,6 @@ async function descriptionToGif(desc) {
       body.style.background = `url(${responseJSON.data.images.original.url})`;
       body.style.backgroundRepeat = 'no-repeat';
       body.style.backgroundSize = 'cover';
-      console.log('atmosphere');
     }
   } catch (error) {
     console.log('Error loading gif');
