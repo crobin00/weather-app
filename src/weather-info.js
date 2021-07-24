@@ -16,21 +16,6 @@ async function getWeatherInfo(city) {
     const responseJSON = await response.json();
     const currentWeather = responseJSON.main.temp;
     console.log(responseJSON);
-    //console.log(responseJSON);
-    /*console.log(`Kelvin = ${currentWeather}`);
-    console.log(
-      `Fahrenheit = ${Math.round(kelvinToFahrenheit(currentWeather))}`
-    );
-    console.log(`Celcius = ${Math.round(kelvinToCelcius(currentWeather))}`);
-    console.log(`High = ${responseJSON.main.temp_max}`);
-    console.log(`Low = ${responseJSON.main.temp_min}`);
-    console.log(`Feels Like = ${responseJSON.main.feels_like}`);
-    console.log(`Wind Speed = ${convertToMPH(responseJSON.wind.speed)}`);
-    console.log(`Wind Direction = ${degToDirection(responseJSON.wind.deg)}`);
-    console.log(`Sunrise = ${convertTo24Hr(responseJSON.sys.sunrise)}`);
-    console.log(`Sunset = ${convertTo24Hr(responseJSON.sys.sunset)}`);
-    console.log(`Description = ${responseJSON.weather[0].description}`);
-*/
     const weatherInfo = {
       weather: currentWeather,
       high: responseJSON.main.temp_max,
@@ -46,6 +31,18 @@ async function getWeatherInfo(city) {
     };
     return weatherInfo;
   } catch (error) {
+    const body = document.querySelector('body');
+    const mainInfo = document.querySelector('.main-info');
+    const subInfo = document.querySelector('.sub-info');
+    const city = document.querySelector('.city');
+    body.style.background = 'aqua';
+    mainInfo.childNodes.forEach((child) => {
+      child.innerText = '';
+    });
+    subInfo.childNodes.forEach((child) => {
+      child.innerText = '';
+    });
+    city.innerText = 'Invalid City';
     console.log('Error getting weather information');
   }
 }
@@ -67,7 +64,7 @@ function convertTo24Hr(UTC) {
 }
 
 function convertToMPH(mps) {
-  return mps * 2.237;
+  return Math.round(mps * 2.237);
 }
 
 function degToDirection(deg) {

@@ -25,13 +25,13 @@ let isFahrenheit = true;
 
 search.addEventListener('keypress', (e) => {
   if (e.code == 'Enter') {
-    getInputValue();
+    getInputValue().catch((error) => {});
     e.preventDefault();
   }
 });
 
 searchButton.addEventListener('click', (e) => {
-  getInputValue();
+  getInputValue().catch((error) => {});
 });
 
 swapTempButton.addEventListener('click', (e) => {
@@ -51,14 +51,15 @@ async function getInputValue() {
   weatherInfo = await getWeatherInfo(search.value);
   updateDOM(weatherInfo);
   descriptionToGif(weatherInfo.main);
+  search.value = '';
 }
 
 function updateDOM(weatherInfo) {
   city.innerText = `${weatherInfo.name}`;
   description.innerText = `${capatilizeDescription(weatherInfo.description)}`;
-  wind.innerText = `Wind Speed: ${weatherInfo.wind_speed} ${degToDirection(
-    weatherInfo.wind_direction
-  )}`;
+  wind.innerText = `Wind Speed: ${convertToMPH(
+    weatherInfo.wind_speed
+  )} mph ${degToDirection(weatherInfo.wind_direction)}`;
   sunrise.innerText = `Sunrise: ${convertTo24Hr(weatherInfo.sunrise)}`;
   sunset.innerText = `Sunset: ${convertTo24Hr(weatherInfo.sunset)}`;
 
