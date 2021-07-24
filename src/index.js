@@ -1,3 +1,12 @@
+export {
+  getWeatherInfo,
+  kelvinToFahrenheit,
+  kelvinToCelcius,
+  convertTo24Hr,
+  convertToMPH,
+  degToDirection,
+};
+
 async function getWeatherInfo(city) {
   try {
     const response = await fetch(
@@ -19,6 +28,7 @@ async function getWeatherInfo(city) {
     console.log(`Wind Direction = ${degToDirection(responseJSON.wind.deg)}`);
     console.log(`Sunrise = ${convertTo24Hr(responseJSON.sys.sunrise)}`);
     console.log(`Sunset = ${convertTo24Hr(responseJSON.sys.sunset)}`);
+    console.log(`Description = ${responseJSON.weather[0].description}`);
 
     const weatherInfo = {
       weather: currentWeather,
@@ -76,4 +86,4 @@ function degToDirection(deg) {
   }
 }
 
-getWeatherInfo(prompt('Enter a city'));
+//getWeatherInfo(prompt('Enter a city'));
