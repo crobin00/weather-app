@@ -12,7 +12,8 @@ body {
   text-align: center;
   align-items: center;
   font-family: 'Roboto', sans-serif;
-  background: aqua;
+  width: 100vw;
+  height: 100vh;
 }
 
 form {
@@ -27,6 +28,11 @@ form {
   border: 2px solid black;
   padding: 5px;
   border-radius: 50%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
 }
 
 #search {
