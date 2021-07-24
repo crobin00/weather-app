@@ -1,89 +1,159 @@
-export {
+import {
   getWeatherInfo,
   kelvinToFahrenheit,
   kelvinToCelcius,
   convertTo24Hr,
   convertToMPH,
   degToDirection,
-};
+} from './weather-info.js';
 
-async function getWeatherInfo(city) {
-  try {
-    const response = await fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=3833c6d79e4ea95a0cd4c11bdfcd0b3d`,
-      { mode: 'cors' }
-    );
-    const responseJSON = await response.json();
-    const currentWeather = responseJSON.main.temp;
-    console.log(responseJSON);
-    console.log(`Kelvin = ${currentWeather}`);
-    console.log(
-      `Fahrenheit = ${Math.round(kelvinToFahrenheit(currentWeather))}`
-    );
-    console.log(`Celcius = ${Math.round(kelvinToCelcius(currentWeather))}`);
-    console.log(`High = ${responseJSON.main.temp_max}`);
-    console.log(`Low = ${responseJSON.main.temp_min}`);
-    console.log(`Feels Like = ${responseJSON.main.feels_like}`);
-    console.log(`Wind Speed = ${convertToMPH(responseJSON.wind.speed)}`);
-    console.log(`Wind Direction = ${degToDirection(responseJSON.wind.deg)}`);
-    console.log(`Sunrise = ${convertTo24Hr(responseJSON.sys.sunrise)}`);
-    console.log(`Sunset = ${convertTo24Hr(responseJSON.sys.sunset)}`);
-    console.log(`Description = ${responseJSON.weather[0].description}`);
+const body = document.querySelector('body');
+const search = document.querySelector('#search');
+const searchButton = document.querySelector('.fa-search');
+const swapTempButton = document.querySelector('.swap');
+const city = document.querySelector('.city');
+const temperature = document.querySelector('.temperature');
+const description = document.querySelector('.description');
+const high = document.querySelector('.high');
+const feelsLike = document.querySelector('.feels-like');
+const sunrise = document.querySelector('.sunrise');
+const low = document.querySelector('.low');
+const wind = document.querySelector('.wind');
+const sunset = document.querySelector('.sunset');
+let weatherInfo = null;
+let isFahrenheit = true;
 
-    const weatherInfo = {
-      weather: currentWeather,
-      high: responseJSON.main.temp_max,
-      low: responseJSON.main.temp_min,
-      feels_like: responseJSON.main.feels_like,
-      wind_speed: responseJSON.wind.deg,
-      wind_direction: responseJSON.wind.deg,
-      sunrise: responseJSON.sys.sunrise,
-      sunset: responseJSON.sys.sunset,
-    };
-    return weatherInfo;
-  } catch (error) {
-    console.log('Error getting weather information');
+search.addEventListener('keypress', (e) => {
+  if (e.code == 'Enter') {
+    getInputValue();
+    e.preventDefault();
   }
-}
+});
 
-function kelvinToFahrenheit(kelvin) {
-  return (9 / 5) * (kelvin - 273.15) + 32;
-}
+searchButton.addEventListener('click', (e) => {
+  getInputValue();
+});
 
-function kelvinToCelcius(kelvin) {
-  return kelvin - 273.15;
-}
-
-function convertTo24Hr(UTC) {
-  const date = new Date(UTC * 1000);
-  const hour = date.getHours();
-  const minutes = date.getMinutes();
-
-  return `${hour}:${minutes}`;
-}
-
-function convertToMPH(mps) {
-  return mps * 2.237;
-}
-
-function degToDirection(deg) {
-  if (deg > 11.25 && deg < 56.25) {
-    return 'NE';
-  } else if (deg > 78.75 && deg < 101.25) {
-    return 'E';
-  } else if (deg > 101.25 && deg < 146.25) {
-    return 'SE';
-  } else if (deg > 146.25 && deg < 191.25) {
-    return 'S';
-  } else if (deg > 191.25 && deg < 236.25) {
-    return 'SW';
-  } else if (deg > 236.25 && deg < 281.25) {
-    return 'W';
-  } else if (deg > 281.25 && deg < 326.25) {
-    return 'NW';
+swapTempButton.addEventListener('click', (e) => {
+  if (swapTempButton.innerText == 'F') {
+    swapTempButton.innerText = 'C';
+    isFahrenheit = false;
+    updateDOM(weatherInfo);
   } else {
-    return 'N';
+    swapTempButton.innerText = 'F';
+    isFahrenheit = true;
+    updateDOM(weatherInfo);
+  }
+});
+
+async function getInputValue() {
+  console.log(await getWeatherInfo(search.value));
+  weatherInfo = await getWeatherInfo(search.value);
+  updateDOM(weatherInfo);
+  descriptionToGif(weatherInfo.main);
+}
+
+function updateDOM(weatherInfo) {
+  city.innerText = `${weatherInfo.name}`;
+  description.innerText = `${capatilizeDescription(weatherInfo.description)}`;
+  wind.innerText = `Wind Speed: ${weatherInfo.wind_speed} ${degToDirection(
+    weatherInfo.wind_direction
+  )}`;
+  sunrise.innerText = `Sunrise: ${convertTo24Hr(weatherInfo.sunrise)}`;
+  sunset.innerText = `Sunset: ${convertTo24Hr(weatherInfo.sunset)}`;
+
+  if (isFahrenheit) {
+    temperature.innerText = `${kelvinToFahrenheit(weatherInfo.weather)}° F`;
+    high.innerText = `High: ${kelvinToFahrenheit(weatherInfo.high)}° F`;
+    low.innerText = `Low: ${kelvinToFahrenheit(weatherInfo.low)}° F`;
+    feelsLike.innerText = `Feels Like: ${kelvinToFahrenheit(
+      weatherInfo.feels_like
+    )}° F`;
+  }
+  if (!isFahrenheit) {
+    temperature.innerText = `${kelvinToCelcius(weatherInfo.weather)}° C`;
+    high.innerText = `High: ${kelvinToCelcius(weatherInfo.high)}° C`;
+    low.innerText = `Low: ${kelvinToCelcius(weatherInfo.low)}° C`;
+    feelsLike.innerText = `Feels Like: ${kelvinToCelcius(
+      weatherInfo.feels_like
+    )}° C`;
   }
 }
 
-//getWeatherInfo(prompt('Enter a city'));
+async function descriptionToGif(desc) {
+  try {
+    //console.log(responseJSON);
+    if (desc == 'Rain') {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/dI3D3BWfDub0Q?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
+      console.log('rain');
+    } else if (desc == 'Thunder') {
+      console.log('thunder');
+    } else if (desc == 'Drizzle') {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/xT9GEOg09OuResnZ6g?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
+      console.log('drizzle');
+    } else if (desc == 'Snow') {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/Xi2Xu0MejhsUo?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
+      console.log('snow');
+    } else if (desc == 'Clear') {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/u01ioCe6G8URG?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
+      console.log('clear');
+    } else if (desc == 'Clouds') {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/qq5gwamAHVofm?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
+      console.log('clouds');
+    } else {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/BiKbcxCt1y49dgtmzo?api_key=koP7TY6OFHNHq72ImPPjEvbtpi31CC5X`,
+        { mode: 'cors' }
+      );
+      const responseJSON = await response.json();
+      body.style.background = `url(${responseJSON.data.images.original.url})`;
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundSize = 'cover';
+      console.log('atmosphere');
+    }
+  } catch (error) {
+    console.log('Error loading gif');
+  }
+}
+
+function capatilizeDescription(desc) {
+  return desc
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join(' ');
+}
