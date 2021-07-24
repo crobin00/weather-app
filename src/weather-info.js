@@ -10,7 +10,7 @@ export {
 async function getWeatherInfo(city) {
   try {
     const response = await fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=3833c6d79e4ea95a0cd4c11bdfcd0b3d`,
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=3833c6d79e4ea95a0cd4c11bdfcd0b3d`,
       { mode: 'cors' }
     );
     const responseJSON = await response.json();
